@@ -37,9 +37,10 @@ from sklearn.compose import ColumnTransformer
 from keras.models import Sequential
 from keras.layers import Dense
 
-DataPath = "D:/python/Unit/lab-cs-ml-00301"
+DataPath = "D:/workspace/py/asu_cse534_u3/lab-cs-ml-00301"
 
 
+# 使用dataExtractor.py处理出3种场景所需的数据
 def run_sa():
     train_data = "/Sa/Training-a1-a3.csv"
     test_data = "/Sa/Testing-a2-a4.csv"
@@ -55,6 +56,12 @@ def run_sb():
 def run_sc():
     train_data = "/Sc/Training-a1-a2.csv"
     test_data = "/Sc/Testing-a1-a2-a3.csv"
+    return train_data, test_data
+
+
+def run_sd():
+    train_data = "/Sd/Training-a1-a3.csv"
+    test_data = "/Sd/Testing-a1-a3.csv"
     return train_data, test_data
 
 
@@ -107,30 +114,28 @@ def run_fnn(train_data, test_data):
 
     # 归一化处理
     # 将训练数据集和测试数据集合并，做一个归一transform，然后使用这个transform来归一测试与训练数据集
+    # 这里的处理方法来自于office hour中Wenhong Huang同学的分享
     X_all = np.vstack((X_train, X_test))
     ct.fit(X_all)
     X_train = np.array(ct.transform(X_train), dtype=np.float)
     X_test = np.array(ct.transform(X_test), dtype=np.float)
-    print(type(X_train))
 
     # X_train = np.array(ct.fit_transform(X_train), dtype=np.float)
-    print(X_train.shape)
-
     # X_test = np.array(ct.fit_transform(X_test), dtype=np.float)
-    print(X_test.shape)
 
     # ================== #
+    # 原本是讲数据集分割，现在是使用不同的训练和测试数据集，此段代码不再需要
     # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
     # ================== #
 
-    # 归一化 --- 因为数据集
+    # 同上归一化处理
     sc = StandardScaler()
-    X_all = np.vstack((X_train, X_test))
-    sc.fit(X_all)
-    X_train = sc.transform(X_train)
-    X_test = sc.transform(X_test)
-    # X_train = sc.fit_transform(X_train)  # Scaling to the range [0,1]
-    # X_test = sc.fit_transform(X_test)
+    # X_all = np.vstack((X_train, X_test))
+    # sc.fit(X_all)
+    # X_train = sc.transform(X_train)
+    # X_test = sc.transform(X_test)
+    X_train = sc.fit_transform(X_train)  # Scaling to the range [0,1]
+    X_test = sc.fit_transform(X_test)
 
     ########################################
     # Part 2: Building FNN
@@ -190,6 +195,9 @@ def run_fnn(train_data, test_data):
     print('[ TN, FP ]')
     print('[ FN, TP ]=')
     print(cm)
+    # recall = TP / (TP+FN)
+    recall = cm[1][1] / (cm[1][0] + cm[1][1])
+    print("Recall: {:.2%}".format(recall))
 
     ########################################
     # Part 4 - Visualizing
@@ -222,7 +230,9 @@ def run_fnn(train_data, test_data):
 
 
 if __name__ == '__main__':
+    # 处理3种场景下训练数据和测试数据
     # train, test = run_sa()
-    train, test = run_sb()
-    # train, test = run_sc()
+    # train, test = run_sb()
+    train, test = run_sc()
+    # train, test = run_sd()
     run_fnn(train, test)

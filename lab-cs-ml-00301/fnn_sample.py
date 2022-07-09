@@ -18,8 +18,12 @@ import numpy as np
 
 # Variable Setup Available datasets: KDDTrain+.txt, KDDTest+.txt, etc. More read Data Set Introduction.html within
 # the NSL-KDD dataset folder Type the training dataset file name in ''
-TrainingDataPath = 'D:/python/Unit/lab-cs-ml-00301/NSL-KDD/'
-TrainingData = 'KDDTrain+_20Percent.txt'
+TrainingDataPath = 'D:/workspace/py/asu_cse534_u3/lab-cs-ml-00301/'
+TrainingData = 'NSL-KDD/KDDTrain+_20Percent.txt'
+# TrainingData = 'Training-a1.csv'
+# TrainingData = 'Training-a2.csv'
+# TrainingData = 'Training-a3.csv'
+# TrainingData = 'Training-a4.csv'
 # Batch Size
 BatchSize = 10
 # Epohe Size
@@ -146,6 +150,9 @@ print('Print the Confusion Matrix:')
 print('[ TN, FP ]')
 print('[ FN, TP ]=')
 print(cm)
+# recall = TP / (TP+FN)
+recall = cm[1][1] / (cm[1][0] + cm[1][1])
+print("Recall: {:.2%}".format(recall))
 
 ########################################
 # Part 4 - Visualizing
